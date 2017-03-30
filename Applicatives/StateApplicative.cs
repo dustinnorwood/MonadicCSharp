@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+
+namespace MonadicCSharp
+{
+    public partial class State<S,V> : IApplicative<V>
+    {
+        public static State<S, V> Pure(V v)
+        {
+            return Return(v);
+        }
+
+        IApplicative<V> IApplicative<V>.Pure(V val)
+        {
+            return Pure(val);
+        }
+
+        public static Func<State<S, V>, State<S, U>> LiftS<U>(State<S, Func<V, U>> appl)
+        {
+            return sv => new State<S, U>(s => new StateValue<S, U>(s, appl.RunState(s).Value(sv.RunState(s).Value)));
+        }
+
+        Func<IApplicative<V>,IApplicative<U>> IApplicative<V>.LiftS<U>(IApplicative<Func<V, U>> appl)
+        {
+            return v => LiftS((State<S, Func<V, U>>)appl)((State<S, V>)v);
+        }
+
+        IApplicative<U> IApplicative<V>.Lift<U>(IApplicative<Func<V, U>> appl)
+        {
+            return Lift((State<S, Func<V, U>>)appl);
+        }
+
+        public State<S, U> Lift<U>(State<S, Func<V, U>> appl)
+        {
+            return State<S, V>.LiftS(appl)(this);
+        }
+    }
+}
