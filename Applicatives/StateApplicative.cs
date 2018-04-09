@@ -18,24 +18,24 @@ namespace MonadicCSharp
             return Pure(val);
         }
 
-        public static Func<State<S, V>, State<S, U>> LiftS<U>(State<S, Func<V, U>> appl)
+        public static Func<State<S, V>, State<S, U>> ApS<U>(State<S, Func<V, U>> appl)
         {
             return sv => new State<S, U>(s => new StateValue<S, U>(s, appl.RunState(s).Value(sv.RunState(s).Value)));
         }
 
-        Func<IApplicative<V>,IApplicative<U>> IApplicative<V>.LiftS<U>(IApplicative<Func<V, U>> appl)
+        Func<IApplicative<V>,IApplicative<U>> IApplicative<V>.ApS<U>(IApplicative<Func<V, U>> appl)
         {
-            return v => LiftS((State<S, Func<V, U>>)appl)((State<S, V>)v);
+            return v => ApS((State<S, Func<V, U>>)appl)((State<S, V>)v);
         }
 
-        IApplicative<U> IApplicative<V>.Lift<U>(IApplicative<Func<V, U>> appl)
+        IApplicative<U> IApplicative<V>.Ap<U>(IApplicative<Func<V, U>> appl)
         {
-            return Lift((State<S, Func<V, U>>)appl);
+            return Ap((State<S, Func<V, U>>)appl);
         }
 
-        public State<S, U> Lift<U>(State<S, Func<V, U>> appl)
+        public State<S, U> Ap<U>(State<S, Func<V, U>> appl)
         {
-            return State<S, V>.LiftS(appl)(this);
+            return State<S, V>.ApS(appl)(this);
         }
     }
 }

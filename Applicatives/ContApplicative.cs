@@ -17,24 +17,24 @@ namespace MonadicCSharp
             return Pure(val);
         }
 
-        public static Func<Cont<R,A>,Cont<R,B>> LiftS<B>(Cont<R,Func<A,B>> c_rab)
+        public static Func<Cont<R,A>,Cont<R,B>> ApS<B>(Cont<R,Func<A,B>> c_rab)
         {
             return c_ra => new Cont<R, B>(f_br => c_rab.RunCont(f_ab => c_ra.RunCont(a => f_br(f_ab(a)))));
         }
 
-        Func<IApplicative<A>,IApplicative<B>> IApplicative<A>.LiftS<B>(IApplicative<Func<A, B>> appl)
+        Func<IApplicative<A>,IApplicative<B>> IApplicative<A>.ApS<B>(IApplicative<Func<A, B>> appl)
         {
-            return ia => LiftS((Cont<R, Func<A, B>>)appl)((Cont<R, A>)ia);
+            return ia => ApS((Cont<R, Func<A, B>>)appl)((Cont<R, A>)ia);
         }
 
-        public Cont<R,B> Lift<B>(Cont<R,Func<A,B>> c_rab)
+        public Cont<R,B> Ap<B>(Cont<R,Func<A,B>> c_rab)
         {
-            return LiftS(c_rab)(this);
+            return ApS(c_rab)(this);
         }
 
-        IApplicative<B> IApplicative<A>.Lift<B>(IApplicative<Func<A, B>> appl)
+        IApplicative<B> IApplicative<A>.Ap<B>(IApplicative<Func<A, B>> appl)
         {
-            return Lift((Cont<R, Func<A, B>>)appl);
+            return Ap((Cont<R, Func<A, B>>)appl);
         }
     }
 }

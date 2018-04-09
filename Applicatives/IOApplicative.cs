@@ -15,24 +15,24 @@ namespace MonadicCSharp
 
         IApplicative<T> IApplicative<T>.Pure(T val) { return Pure(val); }
 
-        public static Func<IO<T>, IO<U>> LiftS<U>(IO<Func<T, U>> appl)
+        public static Func<IO<T>, IO<U>> ApS<U>(IO<Func<T, U>> appl)
         {
             return _t => IO<U>.Pure(appl.Value(_t.Value));
         }
 
-        Func<IApplicative<T>,IApplicative<U>> IApplicative<T>.LiftS<U>(IApplicative<Func<T, U>> appl)
+        Func<IApplicative<T>,IApplicative<U>> IApplicative<T>.ApS<U>(IApplicative<Func<T, U>> appl)
         {
-            return t => LiftS((IO<Func<T, U>>)appl)((IO<T>)t);
+            return t => ApS((IO<Func<T, U>>)appl)((IO<T>)t);
         }
 
-        IApplicative<U> IApplicative<T>.Lift<U>(IApplicative<Func<T, U>> appl)
+        IApplicative<U> IApplicative<T>.Ap<U>(IApplicative<Func<T, U>> appl)
         {
-            return Lift<U>((IO<Func<T, U>>)appl);
+            return Ap<U>((IO<Func<T, U>>)appl);
         }
 
-        public IO<U> Lift<U>(IO<Func<T, U>> appl)
+        public IO<U> Ap<U>(IO<Func<T, U>> appl)
         {
-            return LiftS(appl)(this);
+            return ApS(appl)(this);
         }
     }
 }

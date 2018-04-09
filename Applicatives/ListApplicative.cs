@@ -15,7 +15,7 @@ namespace MonadicCSharp
 
         IApplicative<T> IApplicative<T>.Pure(T val) { return Pure(val); }
 
-        public static Func<MList<T>, MList<U>> LiftS<U>(MList<Func<T, U>> appl)
+        public static Func<MList<T>, MList<U>> ApS<U>(MList<Func<T, U>> appl)
         {
             return _t =>
             {
@@ -30,20 +30,20 @@ namespace MonadicCSharp
             };
         }
 
-        Func<IApplicative<T>, IApplicative<U>> IApplicative<T>.LiftS<U>(IApplicative<Func<T, U>> appl)
+        Func<IApplicative<T>, IApplicative<U>> IApplicative<T>.ApS<U>(IApplicative<Func<T, U>> appl)
         {
-            return t => LiftS((MList<Func<T, U>>)appl)((MList<T>)t);
+            return t => ApS((MList<Func<T, U>>)appl)((MList<T>)t);
         }
 
-        IApplicative<U> IApplicative<T>.Lift<U>(IApplicative<Func<T, U>> appl)
+        IApplicative<U> IApplicative<T>.Ap<U>(IApplicative<Func<T, U>> appl)
         {
-            return Lift((MList<Func<T, U>>)appl);
+            return Ap((MList<Func<T, U>>)appl);
         }
 
 
-        public MList<U> Lift<U>(MList<Func<T, U>> appl)
+        public MList<U> Ap<U>(MList<Func<T, U>> appl)
         {
-            return MList<T>.LiftS(appl)(this);
+            return MList<T>.ApS(appl)(this);
         }
     }
 }

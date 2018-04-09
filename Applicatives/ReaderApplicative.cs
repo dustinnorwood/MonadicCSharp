@@ -18,24 +18,24 @@ namespace MonadicCSharp
             return Pure(val);
         }
 
-        public static Func<Reader<S, T>, Reader<S, U>> LiftS<U>(Reader<S, Func<T, U>> reader)
+        public static Func<Reader<S, T>, Reader<S, U>> ApS<U>(Reader<S, Func<T, U>> reader)
         {
             return r => new Reader<S, U>(s => reader.Run(s)(r.Run(s)));
         }
 
-        Func<IApplicative<T>, IApplicative<U>> IApplicative<T>.LiftS<U>(IApplicative<Func<T, U>> appl)
+        Func<IApplicative<T>, IApplicative<U>> IApplicative<T>.ApS<U>(IApplicative<Func<T, U>> appl)
         {
-            return t => LiftS((Reader<S, Func<T, U>>)appl)((Reader<S, T>)t);
+            return t => ApS((Reader<S, Func<T, U>>)appl)((Reader<S, T>)t);
         }
 
-        public Reader<S, U> Lift<U>(Reader<S, Func<T, U>> reader)
+        public Reader<S, U> Ap<U>(Reader<S, Func<T, U>> reader)
         {
-            return LiftS(reader)(this);
+            return ApS(reader)(this);
         }
 
-        IApplicative<U> IApplicative<T>.Lift<U>(IApplicative<Func<T, U>> appl)
+        IApplicative<U> IApplicative<T>.Ap<U>(IApplicative<Func<T, U>> appl)
         {
-            return Lift((Reader<S, Func<T, U>>)appl);
+            return Ap((Reader<S, Func<T, U>>)appl);
         }
     }
 }

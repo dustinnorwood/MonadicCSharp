@@ -32,7 +32,7 @@ namespace MonadicCSharp
             return Return(n);
         }
 
-        public static Func<IApplicative<T>,None> Lift<T>(IApplicative<Func<T,None>> i)
+        public static Func<IApplicative<T>,None> Ap<T>(IApplicative<Func<T,None>> i)
         {
             return a => Instance;
         }

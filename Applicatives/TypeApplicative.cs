@@ -18,24 +18,24 @@ namespace MonadicCSharp
             return Pure(val);
         }
 
-        public Func<MType<T>,MType<U>> LiftS<U>(MType<Func<T,U>> f)
+        public Func<MType<T>,MType<U>> ApS<U>(MType<Func<T,U>> f)
         {
             return t => new MType<U>(f.Value(t.Value));
         }
 
-        Func<IApplicative<T>, IApplicative<U>> IApplicative<T>.LiftS<U>(IApplicative<Func<T, U>> appl)
+        Func<IApplicative<T>, IApplicative<U>> IApplicative<T>.ApS<U>(IApplicative<Func<T, U>> appl)
         {
-            return t => LiftS((MType<Func<T, U>>)appl)((MType<T>)t);
+            return t => ApS((MType<Func<T, U>>)appl)((MType<T>)t);
         }
 
-        IApplicative<U> IApplicative<T>.Lift<U>(IApplicative<Func<T, U>> appl)
+        IApplicative<U> IApplicative<T>.Ap<U>(IApplicative<Func<T, U>> appl)
         {
-            return Lift((MType<Func<T, U>>)appl);
+            return Ap((MType<Func<T, U>>)appl);
         }
 
-        public MType<U> Lift<U>(MType<Func<T, U>> appl)
+        public MType<U> Ap<U>(MType<Func<T, U>> appl)
         {
-            return LiftS(appl)(this);
+            return ApS(appl)(this);
         }
     }
 }
